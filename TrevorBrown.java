@@ -4,34 +4,15 @@ import java.util.Stack;
 
 public class TrevorBrown {
     public static void main(String[] args) {
+        BST t = new BST();
+        t.insert(2);
+        t.insert(1);
+        t.insert(3);
 
-        BTNode t1 = new BTNode(6);
-        BTNode t2 = new BTNode(2);
-        BTNode t3 = new BTNode(4);
-        BTNode t4 = new BTNode(3);
-        t1.setLeft(t2);
-        t2.setRight(t3);
-        t3.setLeft(t4);
-        BTNode[] path = new BTNode[] { t1, t2, t3, t4 };
+        // we found 3 but its gone? DID IT I think!!!
+        System.out.println(t.search(1));
 
-        Stack<BTNode> s = new Stack<>();
-        for (BTNode n : path) {
-            s.push(n);
-            while (s.size() > 1) {
-                BTNode n1 = s.pop();
-                BTNode n2 = s.pop();
-                BTNode n3 = s.pop();
-
-            }
-        }
-
-        BST t = new BST(t1);
         System.out.println(t);
-
-        // 1 5 6
-        // System.out.println(t);
-
-        // System.out.println("Found: " + t.search(9));
     }
 }
 
@@ -140,11 +121,33 @@ class BST {
     }
 
     public BTNode search(int key) {
-        return splay(root, key);
+        root = search(root, key);
+        return root;
     }
 
     private BTNode search(BTNode root, int key) {
-        return splay(root, key);
+        root = splay(root, key);
+        return root;
+    }
+
+    public void insert(int key) {
+        root = insert(root, key);
+    }
+
+    private BTNode insert(BTNode root, int key) {
+        if (root == null) {
+            root = new BTNode(key);
+            return splay(root, key);
+        }
+        if (root.getData() > key) {
+            root.setLeft(insert(root.getLeft(), key));
+        } else if (root.getData() < key) {
+            root.setRight(insert(root.getRight(), key));
+        } else {
+            System.out.println("No duplicate keys!");
+        }
+        return root;
+
     }
 
     // #region UTILS
