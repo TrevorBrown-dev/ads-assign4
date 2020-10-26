@@ -1,18 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-
 public class TrevorBrown {
     public static void main(String[] args) {
         BST t = new BST();
         t.insert(2);
         t.insert(1);
         t.insert(3);
+        t.insert(6);
 
         // we found 3 but its gone? DID IT I think!!!
-        System.out.println(t.search(1));
-
-        System.out.println(t);
+        t.search(3);
+        t.printTree();
+        t.delete(2);
+        t.printTree();
     }
 }
 
@@ -150,7 +148,79 @@ class BST {
 
     }
 
+    int smallestNode(BTNode root) {
+        int min = root.getData();
+        while (root.getLeft() != null) {
+            min = root.getLeft().getData();
+            root = root.getLeft();
+        }
+        return min;
+    }
+
+    public void delete(int key) {
+        root = delete(root, key);
+    }
+
+    private BTNode delete(BTNode root, int key) {
+        /* Base Case: If the tree is empty */
+        if (root == null)
+            return root;
+
+        /* Otherwise, recur down the tree */
+        if (key < root.getData())
+            root.setLeft(delete(root.getLeft(), key));
+        else if (key > root.getData())
+            root.setRight(delete(root.getRight(), key));
+
+        // if key is same as root's key, then This is the node
+        // to be deleted
+        else {
+            // node with only one child or no child
+            if (root.getLeft() == null)
+                return root.getRight();
+            else if (root.getRight() == null)
+                return root.getLeft();
+
+            // node with two children: Get the inorder successor (smallest
+            // in the right subtree)
+            root.setData(smallestNode(root.getRight()));
+
+            // Delete the inorder successor
+            root.setRight(delete(root.getRight(), root.getData()));
+        }
+
+        return root;
+    }
+
+    public void printTree() {
+        printTree(this.root, 0);
+    }
+
     // #region UTILS
+    private void printTree(BTNode root, int space) {
+        int COUNT = 5;
+        // Base case
+        if (root == null)
+            return;
+
+        // Increase distance between levels
+        space += COUNT;
+
+        // Process right child first
+        printTree(root.getRight(), space);
+
+        // Print current node after space
+        // count
+        System.out.print("\n");
+        for (int i = COUNT; i < space; i++)
+            System.out.print(" ");
+        System.out.print(root.getData() + "\n");
+
+        // Process left child
+        printTree(root.getLeft(), space);
+
+    }
+
     public String inOrder() {
         StringBuilder sb = new StringBuilder();
         inOrder(sb, root);
