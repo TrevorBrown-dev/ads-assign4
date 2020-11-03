@@ -189,14 +189,78 @@ class BST {
         root = splay(root, key, "search");
     }
 
-    public BTNode search(int key) {
-        root = splay(root, key, "search");
+    public void search(int key) {
+        BTNode found = search(root, key);
+        if (found.getData() == key) {
+            
+            root = splay(root, key, "search");
+        } else {
+            root = splay(root, findPredecessor(key), "search");
+        }
         if (root.getData() == key) {
             System.out.println("Search is successful");
         } else {
             System.out.println("Search is unsuccessful");
         }
-        return root;
+    }
+
+    private BTNode search(BTNode root, int key) {
+        if (this.root == null)
+            return null;
+        else if (root.getData() == key) {
+            return root;
+        } else if (key < root.getData()) {
+            return search(root.getLeft(), key);
+        }else {
+            return search(root.getRight(), key);
+        }
+
+        
+        
+        
+    }
+
+    public int findPredecessor(int key) {
+        BTNode predecessor = findPredecessor(root, key);
+        return predecessor.getData();
+
+    }
+
+    private BTNode findPredecessor(BTNode root, int key) {
+        BTNode predecessor = null;
+        BTNode successor = null;
+        {
+
+            // Base case
+            if (this.root == null)
+                return null;
+
+            // If key is present at root
+            if (root.getData() == key) {
+
+                // The maximum value in left
+                // subtree is predecessor
+                if (root.getLeft() != null) {
+                    BTNode tmp = root.getLeft();
+                    while (tmp.getRight() != null)
+                        tmp = tmp.getRight();
+
+                    predecessor = tmp;
+                }
+                return predecessor;
+            }
+
+            // If key is smaller than
+            // root's key, go to left subtree
+            if (root.getData() > key) {
+                successor = root;
+                findPredecessor(root.getLeft(), key);
+            } else {
+                predecessor = root;
+                predecessor = findPredecessor(root.getRight(), key);
+            }
+            return predecessor;
+        }
     }
 
     public void insert(int key) {
