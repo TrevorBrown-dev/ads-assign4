@@ -6,9 +6,10 @@ public class TrevorBrown {
         t.insert(3);
         t.insert(6);
 
-        // we found 3 but its gone? DID IT I think!!!
         t.search(3);
+        t.search(2);
         t.printTree();
+        t.delete(2);
         t.delete(2);
         t.printTree();
     }
@@ -56,11 +57,15 @@ class BST {
         return y;
     }
 
-    private BTNode splay(BTNode root, int key) {
+    private BTNode splay(BTNode root, int key, String directive) {
         // Base cases: root is null or
         // key is present at root
-        if (root == null || root.getData() == key)
+        if (root == null || root.getData() == key) {
+            if (directive.equals("splay")) {
+                System.out.println("Splay is done");
+            }
             return root;
+        }
 
         // Key lies in left subtree
         if (root.getData() > key) {
@@ -72,7 +77,7 @@ class BST {
             if (root.getLeft().getData() > key) {
                 // First recursively bring the
                 // key as root of left-left
-                root.getLeft().setLeft(splay(root.getLeft().getLeft(), key));
+                root.getLeft().setLeft(splay(root.getLeft().getLeft(), key, directive));
 
                 // Do first rotation for root,
                 // second rotation is done after else
@@ -81,7 +86,7 @@ class BST {
             {
                 // First recursively bring
                 // the key as root of left-right
-                root.getLeft().setRight(splay(root.getLeft().getRight(), key));
+                root.getLeft().setRight(splay(root.getLeft().getRight(), key, directive));
 
                 // Do first rotation for root.left
                 if (root.getLeft().getRight() != null)
@@ -93,13 +98,17 @@ class BST {
         } else // Key lies in right subtree
         {
             // Key is not in tree, we are done
-            if (root.getRight() == null)
+            if (root.getRight() == null) {
+                if (directive.equals("search"))
+                    System.out.println("Search is unsuccessful");
                 return root;
+
+            }
 
             // Zag-Zig (Right Left)
             if (root.getRight().getData() > key) {
                 // Bring the key as root of right-left
-                root.getRight().setLeft(splay(root.getRight().getLeft(), key));
+                root.getRight().setLeft(splay(root.getRight().getLeft(), key, directive));
 
                 // Do first rotation for root.right
                 if (root.getRight().getLeft() != null)
@@ -108,7 +117,7 @@ class BST {
             {
                 // Bring the key as root of
                 // right-right and do first rotation
-                root.getRight().setRight(splay(root.getRight().getRight(), key));
+                root.getRight().setRight(splay(root.getRight().getRight(), key, directive));
                 root = leftRotate(root);
             }
 
@@ -119,12 +128,12 @@ class BST {
     }
 
     public BTNode search(int key) {
-        root = search(root, key);
-        return root;
-    }
-
-    private BTNode search(BTNode root, int key) {
-        root = splay(root, key);
+        root = splay(root, key, "search");
+        if (root.getData() == key) {
+            System.out.println("Search is successful");
+        } else {
+            System.out.println("Search is unsuccessful");
+        }
         return root;
     }
 
@@ -135,7 +144,7 @@ class BST {
     private BTNode insert(BTNode root, int key) {
         if (root == null) {
             root = new BTNode(key);
-            return splay(root, key);
+            return splay(root, key, "insert");
         }
         if (root.getData() > key) {
             root.setLeft(insert(root.getLeft(), key));
@@ -143,7 +152,9 @@ class BST {
             root.setRight(insert(root.getRight(), key));
         } else {
             System.out.println("No duplicate keys!");
+            return root;
         }
+        System.out.println("The key is inserted into the tree");
         return root;
 
     }
@@ -163,8 +174,10 @@ class BST {
 
     private BTNode delete(BTNode root, int key) {
         /* Base Case: If the tree is empty */
-        if (root == null)
+        if (root == null) {
+            System.out.println("The key is not in the tree");
             return root;
+        }
 
         /* Otherwise, recur down the tree */
         if (key < root.getData())
@@ -175,6 +188,7 @@ class BST {
         // if key is same as root's key, then This is the node
         // to be deleted
         else {
+            System.out.println("The key is deleted from the tree");
             // node with only one child or no child
             if (root.getLeft() == null)
                 return root.getRight();
