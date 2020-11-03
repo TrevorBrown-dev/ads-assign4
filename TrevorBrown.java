@@ -1,17 +1,73 @@
+import java.io.File;
+import java.util.Scanner;
+
 public class TrevorBrown {
     public static void main(String[] args) {
+        Scanner scan = null;
         BST t = new BST();
-        t.insert(2);
-        t.insert(1);
-        t.insert(3);
-        t.insert(6);
+        try {
+            File file = new File("in.dat");
+            scan = new Scanner(file);
+            while (scan.hasNextLine()) {
+                t.insert(scan.nextInt());
+            }
+        } catch (Exception e) {
 
-        t.search(3);
-        t.search(2);
-        t.printTree();
-        t.delete(2);
-        t.delete(2);
-        t.printTree();
+        } finally {
+            if (scan != null) {
+                scan.close();
+                scan = null;
+            }
+            System.out.println("Initial Tree:");
+            t.printTree();
+
+            String[] commands = { "", "" };
+            Scanner input = new Scanner(System.in);
+            while (!commands[0].equals("E")) {
+                System.out.print("Command> ");
+                commands = input.nextLine().split(" ");
+                if (commands.length > 0 && commands[0].equals("E"))
+                    break;
+                String command = "";
+                int key = Integer.MIN_VALUE;
+                if (commands.length > 0) {
+                    command = commands[0];
+                }
+                if (commands.length > 1) {
+                    try {
+                        key = Integer.parseInt(commands[1]);
+
+                    } catch (Exception e) {
+                        System.out.println("Please enter an integer as the second argument!");
+                    }
+                }
+                if (key != Integer.MIN_VALUE) {
+                    switch (command) {
+
+                        case "S":
+                            t.splay(key);
+                            break;
+                        case "F":
+                            t.search(key);
+                            break;
+                        case "I":
+                            t.insert(key);
+                            break;
+                        case "D":
+                            t.delete(key);
+                            break;
+                        default:
+                            System.out.println("Invalid command!");
+                            break;
+                    }
+                    t.printTree();
+                }
+
+            }
+            input.close();
+
+        }
+
     }
 }
 
@@ -125,6 +181,11 @@ class BST {
             return (root.getRight() == null) ? root : leftRotate(root);
         }
 
+    }
+
+    public void splay(int key) {
+        root = splay(root, key, "search");
+        System.out.println("Splay is done");
     }
 
     public BTNode search(int key) {
