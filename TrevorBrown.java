@@ -46,15 +46,21 @@ public class TrevorBrown {
 
                         case "S":
                             t.splay(key);
+                            System.out.println("Splay is done");
+
                             break;
                         case "F":
                             t.search(key);
                             break;
                         case "I":
                             t.insert(key);
+                            System.out.println("The key is inserted into the tree");
+
+                            t.splay(key);
                             break;
                         case "D":
                             t.delete(key);
+                            t.splay(key);
                             break;
                         default:
                             System.out.println("Invalid command!");
@@ -117,9 +123,7 @@ class BST {
         // Base cases: root is null or
         // key is present at root
         if (root == null || root.getData() == key) {
-            if (directive.equals("splay")) {
-                System.out.println("Splay is done");
-            }
+
             return root;
         }
 
@@ -155,8 +159,6 @@ class BST {
         {
             // Key is not in tree, we are done
             if (root.getRight() == null) {
-                if (directive.equals("search"))
-                    System.out.println("Search is unsuccessful");
                 return root;
 
             }
@@ -185,7 +187,6 @@ class BST {
 
     public void splay(int key) {
         root = splay(root, key, "search");
-        System.out.println("Splay is done");
     }
 
     public BTNode search(int key) {
@@ -205,7 +206,9 @@ class BST {
     private BTNode insert(BTNode root, int key) {
         if (root == null) {
             root = new BTNode(key);
-            return splay(root, key, "insert");
+            System.out.println("The key is inserted into the tree");
+            return root;
+            // return splay(this.root, key, "");
         }
         if (root.getData() > key) {
             root.setLeft(insert(root.getLeft(), key));
@@ -215,7 +218,6 @@ class BST {
             System.out.println("No duplicate keys!");
             return root;
         }
-        System.out.println("The key is inserted into the tree");
         return root;
 
     }
