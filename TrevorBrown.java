@@ -190,13 +190,8 @@ class BST {
     }
 
     public void search(int key) {
-        BTNode found = search(root, key);
-        if (found.getData() == key) {
-            
-            root = splay(root, key, "search");
-        } else {
-            root = splay(root, findPredecessor(key), "search");
-        }
+        root = splay(root, key, "search");
+
         if (root.getData() == key) {
             System.out.println("Search is successful");
         } else {
@@ -205,19 +200,16 @@ class BST {
     }
 
     private BTNode search(BTNode root, int key) {
-        if (this.root == null)
+        if (root == null)
             return null;
         else if (root.getData() == key) {
             return root;
         } else if (key < root.getData()) {
             return search(root.getLeft(), key);
-        }else {
+        } else {
             return search(root.getRight(), key);
         }
 
-        
-        
-        
     }
 
     public int findPredecessor(int key) {
@@ -232,7 +224,7 @@ class BST {
         {
 
             // Base case
-            if (this.root == null)
+            if (root == null)
                 return null;
 
             // If key is present at root
